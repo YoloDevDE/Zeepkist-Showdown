@@ -7,7 +7,7 @@ public class StateCheckResult : IState
     public StateCheckResult(IStateMachine stateMachine)
     {
         StateMachine = stateMachine;
-        //test
+        //test 
     }
 
     public IStateMachine StateMachine { get; }
