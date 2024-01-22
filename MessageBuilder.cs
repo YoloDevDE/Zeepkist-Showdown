@@ -1,77 +1,54 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using ZeepSDK.Chat;
 
 namespace Showdown3;
 
 public class MessageBuilder
 {
-    public bool AutoBreak { get; }
-    public int ColonPosition { get; }
-    public List<string> Parts { get; } = new();
-    public int SeperatorLength { get; }
-    public bool StartWithBreak { get; }
+    private List<string> _message;
 
-    public MessageBuilder(int colonPosition = 12, int seperatorLength = 12, bool startWithBreak = true,
-        bool autoBreak = true)
+
+    public MessageBuilder()
     {
-        this.ColonPosition = colonPosition;
-        this.SeperatorLength = seperatorLength;
-        this.StartWithBreak = startWithBreak;
-        this.AutoBreak = autoBreak;
+        _message = new List<string>();
     }
 
-    public MessageBuilder ClearChat()
+    private int SeparatorLength => 15;
+
+    public MessageBuilder AddText(string text)
     {
-        var msg = string.Join("", Enumerable.Repeat("<br>", 40));
-        Parts.Add(msg);
+        _message.Add(text);
         return this;
     }
 
-
-    public MessageBuilder AddLine(string line)
+    public MessageBuilder AddBreak()
     {
-        Parts.Add(line);
+        _message.Add("<br>");
         return this;
     }
 
     public MessageBuilder AddSeparator()
     {
-        Parts.Add(new string('-', SeperatorLength));
-        return this;
+        return AddSeparator(SeparatorLength);
     }
 
-
-    public MessageBuilder AddKeyValue(string key, string value)
+    public MessageBuilder AddSeparator(int separatorLength)
     {
-        // Fügt Leerzeichen hinzu, um den Schlüssel auf die gewünschte Breite zu bringen
-        var paddedKey = key.PadRight(ColonPosition - 2, ' '); // -2, weil " : " auch zwei Zeichen sind
-        Parts.Add($"{paddedKey} : {value}");
-        return this;
+        if (_message.Count == 0)
+            AddBreak();
+        _message.Add(new string('-', separatorLength));
+        return AddBreak();
     }
 
-    private void AddBreak()
+    public void BuildAndExecute()
     {
-        Parts.Add("<br>");
+        ChatApi.SendMessage(string.Join("", _message));
     }
 
     public string Build()
     {
-        if (StartWithBreak)
-            Parts[0] = "<br>" + Parts[0];
-        if (AutoBreak)
-            return string.Join("<br>", Parts);
-        return string.Join(" ", Parts);
-    }
-
-
-    public void BuildAndSend()
-    {
-        ChatApi.SendMessage(Build());
-    }
-
-    public void BuildAndServermessage(string color = "orange")
-    {
-        ChatApi.SendMessage($"/servermessage {color} 0 " + Build());
+        return string.Join(" ", _message);
     }
 }

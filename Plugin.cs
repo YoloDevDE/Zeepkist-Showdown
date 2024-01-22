@@ -2,8 +2,8 @@
 using HarmonyLib;
 using Showdown3.Commands;
 using Showdown3.StateMachine;
-using Showdown3.StateMachine.Contexts;
 using ZeepSDK.ChatCommands;
+using ZeepSDK.Messaging;
 
 namespace Showdown3;
 
@@ -12,7 +12,8 @@ namespace Showdown3;
 public class Plugin : BaseUnityPlugin
 {
     private Harmony _harmony;
-    public MasterContext MasterContext { get; set; }
+    private MasterStateMachine _masterStateMachine;
+    
 
     private void Awake()
     {
@@ -22,8 +23,12 @@ public class Plugin : BaseUnityPlugin
         ChatCommandApi.RegisterLocalChatCommand<CommandStart>();
         ChatCommandApi.RegisterLocalChatCommand<CommandStop>();
         ChatCommandApi.RegisterLocalChatCommand<CommandContinue>();
+        
         ChatCommandApi.RegisterMixedChatCommand<CommandBan>();
-        MasterContext = new MasterContext();
+        ChatCommandApi.RegisterMixedChatCommand<CommandPick>();
+
+         
+        _masterStateMachine = new MasterStateMachine();
         // Plugin startup logic
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
     }

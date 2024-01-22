@@ -1,6 +1,6 @@
 ﻿namespace Showdown3;
 
-public class Model
+public class HttpHelper
 {
     
 }
