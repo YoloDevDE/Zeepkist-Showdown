@@ -10,7 +10,7 @@ public class LobbyConfigurer
     private string _joinMessageColor;
     private string _lobbyName;
     private int _lobbyPlayerCount = 64;
-    private bool _lobbyPublic = false;
+    private bool _lobbyPublic;
     private int _lobbyTimeInSeconds = 600;
 
     public LobbyConfigurer SetName(string name)

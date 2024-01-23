@@ -1,18 +1,17 @@
 ﻿using Showdown3.Commands;
 using Showdown3.StateMachine.Interfaces;
-using ZeepSDK.Messaging;
 
-namespace Showdown3.StateMachine;
+namespace Showdown3.StateMachine.PluginState;
 
-public class MasterStateOff : IState
+public class StateOff : IState
 {
-    public MasterStateOff(IStateMachine stateMachine)
+    public StateOff(IStateContext stateContext)
     {
-        StateMachine = stateMachine;
+        StateContext = stateContext;
     }
 
 
-    public IStateMachine StateMachine { get; }
+    public IStateContext StateContext { get; }
 
     public void Enter()
     {
@@ -34,6 +33,6 @@ public class MasterStateOff : IState
 
     private void OnCommandStart()
     {
-        StateMachine.TransitionTo(new MasterStateOn(StateMachine));
+        StateContext.TransitionTo(new StateOn(StateContext));
     }
 }

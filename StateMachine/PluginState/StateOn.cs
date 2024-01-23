@@ -1,26 +1,27 @@
 ﻿using Showdown3.Commands;
 using Showdown3.StateMachine.Interfaces;
-using ZeepSDK.Messaging;
+using Showdown3.StateMachine.PluginState.HostState;
 
-namespace Showdown3.StateMachine;
+namespace Showdown3.StateMachine.PluginState;
 
-public class MasterStateOn : IMasterState
+public class StateOn : IStateContextConnector
 {
-    public MasterStateOn(IStateMachine stateMachine)
+    public StateOn(IStateContext stateContext)
     {
-        StateMachine = stateMachine;
-        CurrentState = new StateShowdownMain(this);
+        StateContext = stateContext;
+        State = new HostContext(this);
     }
 
-    public IStateMachine StateMachine { get; }
-    public IState CurrentState { get; set; }
+    public IStateContext StateContext { get; }
+    public IState State { get; set; }
 
     public void Enter()
     {
         CommandStart.OnHandle += OnCommandStart;
         CommandStop.OnHandle += OnCommandStop;
         TaggedMessenger.Value.LogSuccess("started");
-        CurrentState.Enter();
+
+        State.Enter();
     }
 
 
@@ -29,12 +30,13 @@ public class MasterStateOn : IMasterState
         CommandStart.OnHandle -= OnCommandStart;
         CommandStop.OnHandle -= OnCommandStop;
         TaggedMessenger.Value.LogSuccess("stopped");
-        CurrentState.Exit();
+
+        State.Exit();
     }
 
     private void OnCommandStop()
     {
-        StateMachine.TransitionTo(new MasterStateOff(StateMachine));
+        StateContext.TransitionTo(new StateOff(StateContext));
     }
 
     private void OnCommandStart()

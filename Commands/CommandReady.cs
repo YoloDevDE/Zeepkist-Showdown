@@ -4,12 +4,12 @@ using ZeepSDK.ChatCommands;
 
 namespace Showdown3.Commands;
 
-public class CommandBan : IMixedChatCommand
+public class CommandReady : IMixedChatCommand
 {
     public static Action<ulong, string> OnHandle;
     public string Prefix => "!";
 
-    public string Command => "ban";
+    public string Command => "ready";
 
     public string Description => "";
 

@@ -6,6 +6,7 @@ namespace Showdown3.Commands;
 
 public class CommandPick : IMixedChatCommand
 {
+    public static Action<ulong, string> OnHandle;
     public string Prefix => "!";
 
     public string Command => "pick";
@@ -22,6 +23,4 @@ public class CommandPick : IMixedChatCommand
     {
         Handle(arguments: arguments, playerId: ZeepkistNetwork.LocalPlayer.SteamID);
     }
-
-    public static Action<ulong, string> OnHandle;
 }

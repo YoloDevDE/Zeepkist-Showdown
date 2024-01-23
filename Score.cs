@@ -2,9 +2,8 @@
 
 public class Score
 {
-    public Score( int position, double time)
+    public Score(int position, double time)
     {
-
         Position = position;
         Time = time;
     }

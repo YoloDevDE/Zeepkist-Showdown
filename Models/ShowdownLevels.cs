@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Showdown3.Models;
+﻿namespace Showdown3.Models;
 
 public class ShowdownLevel
 {

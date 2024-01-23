@@ -1,45 +1,42 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace Showdown3;
 
-using System;
-using System.Threading;
-
 public class CountDown
 {
-    private int countDownValue;
-    private readonly int interval;
-    private bool isCounting;
-
-    public event EventHandler<int> Tick;
-    public event EventHandler CountdownEnded;
+    private readonly int _interval;
+    private int _countDownValue;
+    private bool _isCounting;
 
     public CountDown(int countDownStart, int interval = 1000)
     {
-        this.countDownValue = countDownStart;
-        this.interval = interval;
-        this.isCounting = true;
+        _countDownValue = countDownStart;
+        this._interval = interval;
+        _isCounting = true;
 
         // Starten Sie den Countdown im Konstruktor
         StartCountdown();
     }
 
+    public event Action<int> Tick;
+    public event Action CountdownEnded;
+
     private void StartCountdown()
     {
-        Thread countdownThread = new Thread(() =>
+        var countdownThread = new Thread(() =>
         {
-            while (isCounting)
+            OnTick(_countDownValue);
+            while (_isCounting)
             {
-                Thread.Sleep(interval);
-                countDownValue--;
-
+                Thread.Sleep(_interval);
+                _countDownValue--;
                 // Event auslösen für jeden Takt
-                OnTick(countDownValue);
-
-                if (countDownValue < 0)
+                OnTick(_countDownValue);
+                if (_countDownValue <= 0)
                 {
                     // Countdown beenden und Event auslösen
-                    isCounting = false;
+                    _isCounting = false;
                     OnCountdownEnded();
                 }
             }
@@ -50,24 +47,24 @@ public class CountDown
 
     private void OnTick(int currentValue)
     {
-        Tick?.Invoke(this, currentValue);
+        Tick?.Invoke(currentValue);
     }
 
     private void OnCountdownEnded()
     {
-        CountdownEnded?.Invoke(this, EventArgs.Empty);
+        CountdownEnded?.Invoke();
     }
 
     public int Update()
     {
         // Hier können Sie zusätzliche Logik hinzufügen, wenn der Countdown aktualisiert wird
-        return countDownValue;
+        return _countDownValue;
     }
 
     public void End()
     {
         // Hier können Sie zusätzliche Logik hinzufügen, wenn der Countdown endet
-        isCounting = false;
+        _isCounting = false;
         OnCountdownEnded();
     }
 }

@@ -6,12 +6,17 @@ namespace Showdown3;
 public class Match
 {
     private List<Race> _races;
-    private int count = 0;
+    private int count;
+
     public Match(Team teamA, Team teamB)
     {
         TeamA = teamA;
         TeamB = teamB;
         _races = new List<Race>();
+    }
+
+    public Match()
+    {
     }
 
     public Team TeamA { get; }
@@ -20,6 +25,6 @@ public class Match
     public bool CheckIfWinContitionIsMet()
     {
         count++;
-        return count > 3;
+        return count > 2;
     }
 }

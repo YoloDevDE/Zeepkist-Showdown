@@ -4,5 +4,5 @@ namespace Showdown3;
 
 public static class TaggedMessenger
 {
-    public static ITaggedMessenger Value  => MessengerApi.CreateTaggedMessenger("Showdown");
+    public static ITaggedMessenger Value => MessengerApi.CreateTaggedMessenger("Showdown");
 }

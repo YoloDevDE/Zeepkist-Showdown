@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
 using ZeepSDK.Chat;
 
 namespace Showdown3;
 
 public class MessageBuilder
 {
-    private List<string> _message;
+    private readonly List<string> _message;
 
 
     public MessageBuilder()

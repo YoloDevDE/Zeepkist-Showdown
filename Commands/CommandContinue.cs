@@ -5,6 +5,7 @@ namespace Showdown3.Commands;
 
 public class CommandContinue : ILocalChatCommand
 {
+    public static Action OnHandle;
     public string Prefix => "/";
 
     public string Command => "sd continue";
@@ -16,6 +17,4 @@ public class CommandContinue : ILocalChatCommand
     {
         OnHandle?.Invoke();
     }
-
-    public static Action OnHandle;
 }

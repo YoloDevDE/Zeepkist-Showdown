@@ -2,16 +2,16 @@
 
 namespace Showdown3.StateMachine.Interfaces;
 
-public interface IStateMachine
+public interface IStateContext
 {
-    public IState CurrentState { get; set; }
+    public IState State { get; set; }
 
     public void TransitionTo(IState nextState)
     {
-        ChatApi.SendMessage($"Exiting: {CurrentState.GetType().Name}");
-        CurrentState.Exit();
+        ChatApi.SendMessage($"Exiting: {State.GetType().Name}");
+        State.Exit();
         ChatApi.SendMessage($"Entering: {nextState.GetType().Name}");
         nextState.Enter();
-        CurrentState = nextState;
+        State = nextState;
     }
 }

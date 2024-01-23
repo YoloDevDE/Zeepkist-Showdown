@@ -5,6 +5,5 @@ namespace Showdown3;
 
 public class Race
 {
-
     public Dictionary<Racer, int> LeaderBoard { get; }
 }

@@ -3,6 +3,4 @@
 public class Messages
 {
     public static string Joinmessage => "Joinmessage";
-    
-    
 }

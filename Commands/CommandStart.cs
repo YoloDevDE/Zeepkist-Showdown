@@ -5,6 +5,7 @@ namespace Showdown3.Commands;
 
 public class CommandStart : ILocalChatCommand
 {
+    public static Action OnHandle;
     public string Prefix => "/";
 
     public string Command => "sd start";
@@ -16,6 +17,4 @@ public class CommandStart : ILocalChatCommand
     {
         OnHandle?.Invoke();
     }
-
-    public static Action OnHandle;
 }
