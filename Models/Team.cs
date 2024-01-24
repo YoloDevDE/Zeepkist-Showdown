@@ -1,25 +1,42 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Showdown3.Models;
 
 public class Team
 {
-    public Team(List<Racer> racers, string name, string tag)
+    public Team(string name, string tag, ulong challongeId = default)
     {
-        Racers = racers ?? new List<Racer>(); // Vermeidet Null-Werte
+        Racers = new HashSet<Racer>();
         Name = name;
-        Tag = tag;
+        Tag = $"[{tag}]";
+        ChallongeId = challongeId;
+        Inventory = new TeamInventory();
     }
 
-    public Team(string name, string tag) : this(new List<Racer>(), name, tag)
-    {
-    }
-
-    public Team() : this(new List<Racer>(), null, null)
-    {
-    }
-
-    public List<Racer> Racers { get; set; }
+    public HashSet<Racer> Racers { get; set; }
     public string Name { get; set; }
     public string Tag { get; set; }
+    public ulong ChallongeId { get; set; }
+    public TeamInventory Inventory { get; private set; }
+
+    public string GetFormattedInventory()
+    {
+        string formattedBans = Inventory.Bans.Count > 0
+            ? string.Join(", ", Inventory.Bans.Select(b => b.LevelName))
+            : "None";
+        string formattedPicks = Inventory.Picks.Count > 0
+            ? string.Join(", ", Inventory.Picks.Select(p => p.LevelName))
+            : "None";
+
+        return new MessageBuilder()
+            .AddText($"{Tag} {Name}")
+            .AddBreak()
+            .AddSeparator()
+            .AddText($"Banned: {formattedBans} | Picked: {formattedPicks}")
+            .AddBreak()
+            .AddText(
+                $"Bans Left: {Inventory.MaxBans - Inventory.Bans.Count} | Picks Left: {Inventory.MaxPicks - Inventory.Picks.Count}")
+            .Build();
+    }
 }

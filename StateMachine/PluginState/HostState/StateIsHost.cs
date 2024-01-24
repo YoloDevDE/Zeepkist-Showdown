@@ -1,39 +1,35 @@
 ﻿using Showdown3.StateMachine.Interfaces;
 using Showdown3.StateMachine.PluginState.HostState.MatchState;
-using UnityEngine;
 using ZeepkistClient;
 
 namespace Showdown3.StateMachine.PluginState.HostState;
 
-public class StateHost : IStateContextConnector
+public class StateIsHost : IStateGateway
 {
-    public Match Match { get; set; }
-
-    public StateHost(IStateContext stateContext)
+    public StateIsHost(IContext context)
     {
-        StateContext = stateContext;
-        State = new StateWaiting(this);
+        Context = context;
+        SubContext = new MatchContext(Context);
     }
 
-    public IStateContext StateContext { get; }
+    public IContext Context { get; }
+    public IContext SubContext { get; }
 
     public void Enter()
     {
         ZeepkistNetwork.MasterChanged += OnHostChange;
         TaggedMessenger.Value.LogSuccess("You have Host. Mod is now in 'Active' State");
-        State.Enter();
+        SubContext.State.Enter();
     }
 
     public void Exit()
     {
+        SubContext.State.Exit();
         ZeepkistNetwork.MasterChanged -= OnHostChange;
-        State.Exit();
     }
-
-    public IState State { get; set; }
 
     private void OnHostChange(ZeepkistNetworkPlayer zeepkistNetworkPlayer)
     {
-        if (!ZeepkistNetwork.LocalPlayerHasHostPowers()) StateContext.TransitionTo(new StateNoHost(StateContext));
+        Context.TransitionTo(new StateCheckHost(Context));
     }
 }

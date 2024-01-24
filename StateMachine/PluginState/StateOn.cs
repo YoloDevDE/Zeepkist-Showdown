@@ -1,46 +1,59 @@
 ﻿using Showdown3.Commands;
 using Showdown3.StateMachine.Interfaces;
 using Showdown3.StateMachine.PluginState.HostState;
+using ZeepSDK.Multiplayer;
+using ZeepSDK.Racing;
 
 namespace Showdown3.StateMachine.PluginState;
 
-public class StateOn : IStateContextConnector
+public class StateOn : IStateGateway
 {
-    public StateOn(IStateContext stateContext)
+    public StateOn(IContext context)
     {
-        StateContext = stateContext;
-        State = new HostContext(this);
+        Context = context;
+        SubContext = new PlayerContext(Context);
     }
 
-    public IStateContext StateContext { get; }
     public IState State { get; set; }
+
+    public IContext Context { get; }
+    public IContext SubContext { get; }
 
     public void Enter()
     {
         CommandStart.OnHandle += OnCommandStart;
         CommandStop.OnHandle += OnCommandStop;
-        TaggedMessenger.Value.LogSuccess("started");
+        RacingApi.LevelLoaded += EnterPhotomode;
+        MultiplayerApi.JoinedRoom += EnterPhotomode;
 
-        State.Enter();
+        EnterPhotomode();
+        TaggedMessenger.Value.LogSuccess("started");
+        SubContext.State.Enter();
     }
 
 
     public void Exit()
     {
+        SubContext.State.Exit();
         CommandStart.OnHandle -= OnCommandStart;
         CommandStop.OnHandle -= OnCommandStop;
+        RacingApi.LevelLoaded -= EnterPhotomode;
+        MultiplayerApi.JoinedRoom -= EnterPhotomode;
         TaggedMessenger.Value.LogSuccess("stopped");
-
-        State.Exit();
     }
 
     private void OnCommandStop()
     {
-        StateContext.TransitionTo(new StateOff(StateContext));
+        Context.TransitionTo(new StateOff(Context));
     }
 
     private void OnCommandStart()
     {
         TaggedMessenger.Value.LogWarning("already started");
+    }
+
+    private void EnterPhotomode()
+    {
+        BehaviorHelper.EnterPhotomode();
     }
 }

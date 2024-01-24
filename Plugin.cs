@@ -11,7 +11,7 @@ namespace Showdown3;
 public class Plugin : BaseUnityPlugin
 {
     private Harmony _harmony;
-    private PluginContext _pluginContext;
+    private ShowdownContext _showdownContext;
 
 
     private void Awake()
@@ -28,7 +28,7 @@ public class Plugin : BaseUnityPlugin
         ChatCommandApi.RegisterMixedChatCommand<CommandReady>();
 
 
-        _pluginContext = new PluginContext();
+        _showdownContext = new ShowdownContext();
         // Plugin startup logic
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
     }

@@ -5,12 +5,12 @@ namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 
 public class StateRace : IState
 {
-    public StateRace(IStateContext stateContext)
+    public StateRace(IContext context)
     {
-        StateContext = stateContext;
+        Context = context;
     }
 
-    public IStateContext StateContext { get; }
+    public IContext Context { get; }
 
     public void Enter()
     {
@@ -27,6 +27,6 @@ public class StateRace : IState
 
     private void RacingApiOnRoundEnded()
     {
-        StateContext.TransitionTo(new StateCheckResult(StateContext));
+        Context.TransitionTo(new StateCheckResult(Context));
     }
 }

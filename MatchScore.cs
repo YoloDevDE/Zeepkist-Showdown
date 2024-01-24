@@ -1,4 +1,6 @@
-﻿namespace Showdown3;
+﻿using Showdown3.Models;
+
+namespace Showdown3;
 
 public class MatchScore
 {

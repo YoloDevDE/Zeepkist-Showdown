@@ -3,21 +3,21 @@ using ZeepkistClient;
 
 namespace Showdown3.StateMachine.PluginState.HostState;
 
-public class StateNoHost : IState
+public class StateIsNoHost : IState
 {
-    public StateNoHost(IStateContext stateContext)
+    public StateIsNoHost(IContext context)
     {
-        StateContext = stateContext;
+        Context = context;
     }
 
-    public IStateContext StateContext { get; }
+    public IContext Context { get; }
 
 
     public void Enter()
     {
-        TaggedMessenger.Value.LogWarning("You have no Host. Mod is now in 'Passive' state");
         ZeepkistNetwork.MasterChanged += OnHostChanged;
-        CheckHost();
+
+        TaggedMessenger.Value.LogWarning("You have no Host. Mod is now in 'Passive' state");
     }
 
     public void Exit()
@@ -32,6 +32,6 @@ public class StateNoHost : IState
 
     private void CheckHost()
     {
-        if (ZeepkistNetwork.LocalPlayerHasHostPowers()) StateContext.TransitionTo(new StateHost(StateContext));
+        Context.TransitionTo(new StateCheckHost(Context));
     }
 }

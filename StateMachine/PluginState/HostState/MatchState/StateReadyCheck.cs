@@ -14,12 +14,12 @@ public class StateReadyCheck : IState
     private int _timeLeft;
     private int _votesMax;
 
-    public StateReadyCheck(IStateContext stateContext)
+    public StateReadyCheck(IContext context)
     {
-        StateContext = stateContext;
+        Context = context;
     }
 
-    public IStateContext StateContext { get; }
+    public IContext Context { get; }
 
     public void Enter()
     {
@@ -68,7 +68,7 @@ public class StateReadyCheck : IState
 
     private void TransitionTo()
     {
-        StateContext.TransitionTo(new StatePreRace(StateContext));
+        Context.TransitionTo(new StatePreRace(Context));
     }
 
     private void CountDownOnTick(int seconds)

@@ -2,9 +2,7 @@
 
 public interface IState
 {
-    public IStateContext StateContext { get; }
-    
-    
+    public IContext Context { get; }
 
     public void Enter();
 

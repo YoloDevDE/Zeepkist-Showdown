@@ -2,13 +2,15 @@
 
 namespace Showdown3.StateMachine.PluginState;
 
-public class PluginContext : IStateContext
+public class ShowdownContext : IContext
 {
-    public PluginContext()
+    public ShowdownContext()
     {
+        TopContext = this;
         State = new StateOff(this);
         State.Enter();
     }
 
     public IState State { get; set; }
+    public IContext TopContext { get; }
 }

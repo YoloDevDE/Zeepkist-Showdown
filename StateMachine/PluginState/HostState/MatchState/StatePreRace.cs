@@ -7,18 +7,17 @@ namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 
 public class StatePreRace : IState
 {
-    private  CountDown _countDown;
+    private CountDown _countDown;
 
-    public StatePreRace(IStateContext stateContext)
+    public StatePreRace(IContext context)
     {
-        StateContext = stateContext;
-
+        Context = context;
     }
 
-    public IStateContext StateContext { get; }
+    public IContext Context { get; }
 
     public void Enter()
-    {        
+    {
         _countDown = new CountDown(10);
         _countDown.Tick += CountDownOnTick;
         _countDown.CountdownEnded += CountDownOnCountdownEnded;
@@ -34,7 +33,7 @@ public class StatePreRace : IState
 
     private void RacingApiOnLevelLoaded()
     {
-        StateContext.TransitionTo(new StateRace(StateContext));
+        Context.TransitionTo(new StateRace(Context));
     }
 
     private void CountDownOnCountdownEnded()
@@ -46,7 +45,7 @@ public class StatePreRace : IState
     {
         new ServerMessageBuilder()
             .SetColor(Color.red)
-            .AddText($"X vs Y")
+            .AddText("X vs Y")
             .AddBreak()
             .AddText($"Starting in: {TimeSpan.FromSeconds(seconds).Duration():ss}")
             .BuildAndExecute();

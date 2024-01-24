@@ -2,9 +2,9 @@
 
 namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 
-public class StateCheckResult : IState
+public class StateWaitingForRacers : IState
 {
-    public StateCheckResult(IContext context)
+    public StateWaitingForRacers(IContext context)
     {
         Context = context;
     }
@@ -13,6 +13,7 @@ public class StateCheckResult : IState
 
     public void Enter()
     {
+        Context.TransitionTo(new StateWaiting(Context));
     }
 
     public void Exit()

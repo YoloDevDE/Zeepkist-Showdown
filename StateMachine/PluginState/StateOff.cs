@@ -5,13 +5,12 @@ namespace Showdown3.StateMachine.PluginState;
 
 public class StateOff : IState
 {
-    public StateOff(IStateContext stateContext)
+    public StateOff(IContext context)
     {
-        StateContext = stateContext;
+        Context = context;
     }
 
-
-    public IStateContext StateContext { get; }
+    public IContext Context { get; }
 
     public void Enter()
     {
@@ -33,6 +32,6 @@ public class StateOff : IState
 
     private void OnCommandStart()
     {
-        StateContext.TransitionTo(new StateOn(StateContext));
+        Context.TransitionTo(new StateOn(Context));
     }
 }

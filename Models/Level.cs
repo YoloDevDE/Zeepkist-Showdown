@@ -1,14 +1,14 @@
 ﻿namespace Showdown3.Models;
 
-public class ShowdownLevel
+public class Level
 {
-    public ShowdownLevel(ulong workshopId, string levelName)
+    public Level(ulong workshopId, string levelName)
     {
         WorkshopId = workshopId;
         LevelName = levelName;
     }
 
-    public ShowdownLevel(LevelScriptableObject levelScriptableObject)
+    public Level(LevelScriptableObject levelScriptableObject)
     {
         WorkshopId = levelScriptableObject.WorkshopID;
         LevelName = levelScriptableObject.Name;

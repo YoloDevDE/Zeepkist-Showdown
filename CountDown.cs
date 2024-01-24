@@ -12,7 +12,7 @@ public class CountDown
     public CountDown(int countDownStart, int interval = 1000)
     {
         _countDownValue = countDownStart;
-        this._interval = interval;
+        _interval = interval;
         _isCounting = true;
 
         // Starten Sie den Countdown im Konstruktor
