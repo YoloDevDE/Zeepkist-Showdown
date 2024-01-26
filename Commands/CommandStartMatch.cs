@@ -3,12 +3,12 @@ using ZeepSDK.ChatCommands;
 
 namespace Showdown3.Commands;
 
-public class CommandContinue : ILocalChatCommand
+public class CommandStartMatch : ILocalChatCommand
 {
     public static Action OnHandle;
     public string Prefix => "/";
 
-    public string Command => "sd continue";
+    public string Command => "sd match start";
 
     public string Description => "Continues to the next stage from the Hall of Fame";
 

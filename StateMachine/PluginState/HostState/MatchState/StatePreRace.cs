@@ -14,7 +14,6 @@ public class StatePreRace : IState
         Context = context;
     }
 
-    public IContext Context { get; }
 
     public void Enter()
     {
@@ -30,6 +29,8 @@ public class StatePreRace : IState
         _countDown.CountdownEnded -= CountDownOnCountdownEnded;
         RacingApi.LevelLoaded -= RacingApiOnLevelLoaded;
     }
+
+    public IContext Context { get; }
 
     private void RacingApiOnLevelLoaded()
     {

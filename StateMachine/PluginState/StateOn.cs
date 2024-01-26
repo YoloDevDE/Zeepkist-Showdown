@@ -11,7 +11,7 @@ public class StateOn : IStateGateway
     public StateOn(IContext context)
     {
         Context = context;
-        SubContext = new PlayerContext(Context);
+        SubContext = new PlayerContext(context); // Beachte, dass PlayerContext auch generisch sein muss
     }
 
     public IState State { get; set; }
@@ -30,7 +30,6 @@ public class StateOn : IStateGateway
         TaggedMessenger.Value.LogSuccess("started");
         SubContext.State.Enter();
     }
-
 
     public void Exit()
     {

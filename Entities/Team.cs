@@ -18,14 +18,14 @@ public class Team
     public string Name { get; set; }
     public string Tag { get; set; }
     public ulong ChallongeId { get; set; }
-    public TeamInventory Inventory { get; private set; }
+    public TeamInventory Inventory { get; }
 
     public string GetFormattedInventory()
     {
-        string formattedBans = Inventory.Bans.Count > 0
+        var formattedBans = Inventory.Bans.Count > 0
             ? string.Join(", ", Inventory.Bans.Select(b => b.LevelName))
             : "None";
-        string formattedPicks = Inventory.Picks.Count > 0
+        var formattedPicks = Inventory.Picks.Count > 0
             ? string.Join(", ", Inventory.Picks.Select(p => p.LevelName))
             : "None";
 

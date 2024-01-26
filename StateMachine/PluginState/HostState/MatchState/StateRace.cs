@@ -10,7 +10,6 @@ public class StateRace : IState
         Context = context;
     }
 
-    public IContext Context { get; }
 
     public void Enter()
     {
@@ -24,6 +23,8 @@ public class StateRace : IState
     {
         RacingApi.LevelLoaded -= RacingApiOnRoundEnded;
     }
+
+    public IContext Context { get; }
 
     private void RacingApiOnRoundEnded()
     {

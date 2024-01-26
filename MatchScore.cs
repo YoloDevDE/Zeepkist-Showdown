@@ -1,4 +1,5 @@
-﻿using Showdown3.Models;
+﻿using Showdown3.Entities.Match;
+using Showdown3.Models;
 
 namespace Showdown3;
 

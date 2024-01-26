@@ -2,7 +2,8 @@
 
 public interface IContext
 {
-    IState State { get; set; }
+    public IState State { get; set; }
+
     public IContext TopContext { get; }
 
     public void TransitionTo(IState nextState)

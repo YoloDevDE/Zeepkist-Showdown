@@ -9,8 +9,6 @@ public class StateCheckResult : IState
         Context = context;
     }
 
-    public IContext Context { get; }
-
     public void Enter()
     {
     }
@@ -18,4 +16,6 @@ public class StateCheckResult : IState
     public void Exit()
     {
     }
+
+    public IContext Context { get; }
 }
