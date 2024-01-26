@@ -1,6 +1,4 @@
 ﻿using Showdown3.Commands;
-using Showdown3.Entities.Match;
-using Showdown3.Models;
 using Showdown3.StateMachine.Interfaces;
 
 namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
@@ -17,10 +15,9 @@ public class StateWaiting : IState
 
     public void Enter()
     {
-        CommandStartMatch.OnHandle += OnCommandContinue;
+        CommandMatchStart.OnHandle += MatchStart;
 
-        ((MatchContext)Context).Match = new Match(new Team("A", "A"), new Team("B", "B"));
-        LobbyConfigurer.HoFLobby();
+
         new ServerMessageBuilder()
             .SetColor(Color.white)
             .AddText("Waiting for Host to Start the Match")
@@ -29,10 +26,10 @@ public class StateWaiting : IState
 
     public void Exit()
     {
-        CommandStartMatch.OnHandle -= OnCommandContinue;
+        CommandMatchStart.OnHandle -= MatchStart;
     }
 
-    private void OnCommandContinue()
+    private void MatchStart()
     {
         Context.TransitionTo(new StatePreDraft(Context));
     }

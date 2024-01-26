@@ -1,4 +1,5 @@
-﻿using Showdown3.StateMachine.Interfaces;
+﻿using Showdown3.Commands;
+using Showdown3.StateMachine.Interfaces;
 using Showdown3.StateMachine.PluginState.HostState.MatchState;
 using ZeepkistClient;
 
@@ -13,11 +14,12 @@ public class StateIsHost : IStateGateway
     }
 
     public IContext Context { get; }
-    public IContext SubContext { get; }
+    public IContext SubContext { get; set; }
 
     public void Enter()
     {
         ZeepkistNetwork.MasterChanged += OnHostChange;
+        CommandMatchStop.OnHandle += StopMatchForcefully;
         TaggedMessenger.Value.LogSuccess("You have Host. Mod is now in 'Active' State");
         SubContext.State.Enter();
     }
@@ -26,6 +28,15 @@ public class StateIsHost : IStateGateway
     {
         SubContext.State.Exit();
         ZeepkistNetwork.MasterChanged -= OnHostChange;
+        CommandMatchStop.OnHandle -= StopMatchForcefully;
+    }
+
+    public void StopMatchForcefully()
+    {
+        SubContext.State.Exit();
+
+        SubContext = new MatchContext(Context);
+        SubContext.State.Enter();
     }
 
     private void OnHostChange(ZeepkistNetworkPlayer zeepkistNetworkPlayer)

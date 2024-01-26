@@ -3,7 +3,7 @@ using ZeepSDK.ChatCommands;
 
 namespace Showdown3.Commands;
 
-public class CommandStartMatch : ILocalChatCommand
+public class CommandMatchStart : ILocalChatCommand
 {
     public static Action OnHandle;
     public string Prefix => "/";

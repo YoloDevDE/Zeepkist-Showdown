@@ -2,9 +2,9 @@
 
 public class Racer
 {
-    public Racer(string username, ulong steamId, Team team = null)
+    public Racer(string name, ulong steamId, Team team = null)
     {
-        Username = username;
+        Name = name;
         SteamId = steamId;
         Team = team;
     }
@@ -12,5 +12,10 @@ public class Racer
     public Team Team { get; set; }
 
     public ulong SteamId { get; }
-    public string Username { get; }
+    public string Name { get; }
+
+    public override string ToString()
+    {
+        return $"{Name}";
+    }
 }

@@ -8,25 +8,31 @@ namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 
 public class StatePreDraft : IState
 {
+    private Match _match;
+
     public StatePreDraft(IContext context)
     {
         Context = context;
     }
 
-
-    public Match Match { get; set; }
     public Team Initiative { get; set; }
 
 
     public void Enter()
     {
-        CommandSetInitiative.OnHandle += OnCommandSetInitiative;
+        CommandMatchInitiative.OnHandle += OnCommandSetInitiative;
 
-        Match = ((MatchContext)Context).Match;
+        _match = ((MatchContext)Context).Match;
+
+        new ServerMessageBuilder()
+            .SetColor(Color.orange)
+            .AddText(string.Join(", ", _match.AvailableMaps))
+            .BuildAndExecute();
     }
 
     public void Exit()
     {
+        CommandMatchInitiative.OnHandle -= OnCommandSetInitiative;
     }
 
     public IContext Context { get; }
@@ -36,8 +42,10 @@ public class StatePreDraft : IState
         switch (arguments.ToUpper())
         {
             case "A":
+                _match.Initiative = _match.TeamA;
                 break;
             case "B":
+                _match.Initiative = _match.TeamB;
                 break;
             default:
                 ChatApi.AddLocalMessage("Invalid arguments. Use \"A\" or \"B\"");

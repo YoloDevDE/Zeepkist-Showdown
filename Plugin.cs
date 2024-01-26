@@ -21,9 +21,11 @@ public class Plugin : BaseUnityPlugin
 
         ChatCommandApi.RegisterLocalChatCommand<CommandStart>();
         ChatCommandApi.RegisterLocalChatCommand<CommandStop>();
-        ChatCommandApi.RegisterLocalChatCommand<CommandStartMatch>();
-        ChatCommandApi.RegisterLocalChatCommand<CommandSetInitiative>();
-        ChatCommandApi.RegisterLocalChatCommand<CommandSetMatch>();
+        ChatCommandApi.RegisterLocalChatCommand<CommandMatchStart>();
+        ChatCommandApi.RegisterLocalChatCommand<CommandMatchInitiative>();
+        ChatCommandApi.RegisterLocalChatCommand<CommandMatchSet>();
+        ChatCommandApi.RegisterLocalChatCommand<CommandMatchStop>();
+        ChatCommandApi.RegisterLocalChatCommand<CommandMatchCreate>();
 
         ChatCommandApi.RegisterMixedChatCommand<CommandBan>();
         ChatCommandApi.RegisterMixedChatCommand<CommandPick>();

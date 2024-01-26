@@ -7,26 +7,31 @@ public class Team
 {
     public Team(string name, string tag, ulong challongeId = default)
     {
-        Racers = new HashSet<Racer>();
+        Members = new HashSet<Racer>();
         Name = name;
         Tag = $"[{tag}]";
         ChallongeId = challongeId;
         Inventory = new TeamInventory();
     }
 
-    public HashSet<Racer> Racers { get; set; }
+    public HashSet<Racer> Members { get; set; }
     public string Name { get; set; }
     public string Tag { get; set; }
     public ulong ChallongeId { get; set; }
     public TeamInventory Inventory { get; }
 
+    public override string ToString()
+    {
+        return $"{Tag} {Name}: {string.Join(",", Members)}";
+    }
+
     public string GetFormattedInventory()
     {
         var formattedBans = Inventory.Bans.Count > 0
-            ? string.Join(", ", Inventory.Bans.Select(b => b.LevelName))
+            ? string.Join(", ", Inventory.Bans.Select(b => b.Name))
             : "None";
         var formattedPicks = Inventory.Picks.Count > 0
-            ? string.Join(", ", Inventory.Picks.Select(p => p.LevelName))
+            ? string.Join(", ", Inventory.Picks.Select(p => p.Name))
             : "None";
 
         return new MessageBuilder()
