@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ZeepSDK.Chat;
 
-namespace Showdown3;
+namespace Showdown3.Helper;
 
 public class MessageBuilder
 {

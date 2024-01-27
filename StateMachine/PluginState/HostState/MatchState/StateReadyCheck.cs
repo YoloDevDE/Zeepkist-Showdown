@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Showdown3.Commands;
+using Showdown3.Helper;
 using Showdown3.StateMachine.Interfaces;
 using ZeepkistClient;
 using ZeepSDK.Multiplayer;
@@ -9,7 +10,7 @@ namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 
 public class StateReadyCheck : IState
 {
-    private CountDown _countDown;
+    private Countdown _countdown;
     private HashSet<ulong> _readyVotes;
     private int _timeLeft;
     private int _votesMax;
@@ -25,9 +26,9 @@ public class StateReadyCheck : IState
     {
         _votesMax = ZeepkistNetwork.Players.Count;
         _readyVotes = new HashSet<ulong>();
-        _countDown = new CountDown(60 * 20);
-        _countDown.Tick += CountDownOnTick;
-        _countDown.CountdownEnded += TransitionTo;
+        _countdown = new Countdown(60 * 20);
+        _countdown.OnTick += CountdownOnTick;
+        _countdown.OnCountdownEnd += TransitionTo;
         CommandReady.OnHandle += OnCommandReady;
         MultiplayerApi.PlayerJoined += OnPlayerJoined;
         MultiplayerApi.PlayerLeft += OnPlayerLeft;
@@ -39,8 +40,8 @@ public class StateReadyCheck : IState
 
     public void Exit()
     {
-        _countDown.Tick -= CountDownOnTick;
-        _countDown.CountdownEnded -= TransitionTo;
+        _countdown.OnTick -= CountdownOnTick;
+        _countdown.OnCountdownEnd -= TransitionTo;
         CommandReady.OnHandle -= OnCommandReady;
         MultiplayerApi.PlayerJoined -= OnPlayerJoined;
         MultiplayerApi.PlayerLeft -= OnPlayerLeft;
@@ -63,7 +64,7 @@ public class StateReadyCheck : IState
         _readyVotes.Add(steamId);
         UpdateServerMessage();
         if (_readyVotes.Count == _votesMax)
-            _countDown.End();
+            _countdown.Stop();
     }
 
     private void TransitionTo()
@@ -71,7 +72,7 @@ public class StateReadyCheck : IState
         Context.TransitionTo(new StatePreRace(Context));
     }
 
-    private void CountDownOnTick(int seconds)
+    private void CountdownOnTick(int seconds)
     {
         _timeLeft = seconds;
         UpdateServerMessage();

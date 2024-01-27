@@ -1,4 +1,4 @@
-﻿namespace Showdown3;
+﻿namespace Showdown3.Helper;
 
 public class Color
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Showdown3.Models;
+namespace Showdown3.Entities;
 
 public class TeamInventory
 {
@@ -19,29 +19,27 @@ public class TeamInventory
 
     public bool CanDraft()
     {
-        return Bans.Count < MaxBans && Picks.Count < MaxPicks;
+        return CanPick() || CanBan();
+    }
+
+    public bool CanPick()
+    {
+        return Picks.Count < MaxPicks;
+    }
+
+    public bool CanBan()
+    {
+        return Bans.Count < MaxBans;
     }
 
 
     public bool TryAddBan(Level level)
     {
-        if (Bans.Count < MaxBans) return Bans.Add(level);
-
-        return false;
+        return CanBan() && Bans.Add(level);
     }
 
     public bool TryAddPick(Level level)
     {
-        if (Picks.Count < MaxPicks) return Picks.Add(level);
-
-        return false;
+        return CanPick() && Picks.Add(level);
     }
-
-    public void RefreshInventory()
-    {
-        Bans.Clear();
-        Picks.Clear();
-    }
-
-    // Weitere Methoden nach Bedarf...
 }

@@ -8,7 +8,7 @@ public class MatchContext : IContext
     public MatchContext(IContext topContext)
     {
         TopContext = topContext;
-        State = new StateSetupMatch(this);
+        State = new State1SetupMatch(this);
     }
 
 

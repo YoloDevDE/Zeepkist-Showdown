@@ -8,8 +8,8 @@ public interface IContext
 
     public void TransitionTo(IState nextState)
     {
-        State.Exit();
-        nextState.Enter();
+        State?.Exit();
         State = nextState;
+        State.Enter();
     }
 }

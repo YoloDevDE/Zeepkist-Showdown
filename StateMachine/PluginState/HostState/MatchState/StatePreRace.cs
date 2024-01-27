@@ -1,4 +1,5 @@
 ﻿using System;
+using Showdown3.Helper;
 using Showdown3.StateMachine.Interfaces;
 using ZeepSDK.Chat;
 using ZeepSDK.Racing;
@@ -7,7 +8,7 @@ namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 
 public class StatePreRace : IState
 {
-    private CountDown _countDown;
+    private Countdown _countdown;
 
     public StatePreRace(IContext context)
     {
@@ -17,16 +18,17 @@ public class StatePreRace : IState
 
     public void Enter()
     {
-        _countDown = new CountDown(10);
-        _countDown.Tick += CountDownOnTick;
-        _countDown.CountdownEnded += CountDownOnCountdownEnded;
+        _countdown = new Countdown(10);
+        _countdown.OnTick += CountdownOnTick;
+        _countdown.OnCountdownEnd += CountdownOnCountdownEnded;
         RacingApi.LevelLoaded += RacingApiOnLevelLoaded;
     }
 
     public void Exit()
     {
-        _countDown.Tick -= CountDownOnTick;
-        _countDown.CountdownEnded -= CountDownOnCountdownEnded;
+        _countdown.OnTick -= CountdownOnTick;
+        _countdown.OnCountdownEnd -= CountdownOnCountdownEnded;
+        _countdown.Stop();
         RacingApi.LevelLoaded -= RacingApiOnLevelLoaded;
     }
 
@@ -37,12 +39,12 @@ public class StatePreRace : IState
         Context.TransitionTo(new StateRace(Context));
     }
 
-    private void CountDownOnCountdownEnded()
+    private void CountdownOnCountdownEnded()
     {
         ChatApi.SendMessage("/fs");
     }
 
-    private void CountDownOnTick(int seconds)
+    private void CountdownOnTick(int seconds)
     {
         new ServerMessageBuilder()
             .SetColor(Color.red)

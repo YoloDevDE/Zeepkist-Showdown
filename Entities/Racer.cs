@@ -1,4 +1,4 @@
-﻿namespace Showdown3.Models;
+﻿namespace Showdown3.Entities;
 
 public class Racer
 {

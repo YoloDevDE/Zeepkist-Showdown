@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Showdown3.Helper;
-using ZeepSDK.Chat;
+
+namespace Showdown3.Entities;
 
 public class Level
 {

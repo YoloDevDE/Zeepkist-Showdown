@@ -1,16 +1,17 @@
 ﻿using System.Linq;
 using Showdown3.Entities.Match;
+using Showdown3.Helper;
 using Showdown3.StateMachine.Interfaces;
 using ZeepkistClient;
 using ZeepSDK.Multiplayer;
 
 namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 
-public class StateWaitingForRacers : IState
+public class State2WaitingForRacers : IState
 {
     private Match _match;
 
-    public StateWaitingForRacers(IContext context)
+    public State2WaitingForRacers(IContext context)
     {
         Context = context;
     }
@@ -44,7 +45,7 @@ public class StateWaitingForRacers : IState
         racersNotInGame.Clear();
         if (!racersNotInGame.Any())
         {
-            Context.TransitionTo(new StateWaiting(Context));
+            Context.TransitionTo(new StateWaitingForHost(Context));
             return;
         }
 

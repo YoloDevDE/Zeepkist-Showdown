@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Showdown3.Helper;
 
-namespace Showdown3.Models;
+namespace Showdown3.Entities;
 
 public class Team
 {
@@ -19,6 +20,8 @@ public class Team
     public string Tag { get; set; }
     public ulong ChallongeId { get; set; }
     public TeamInventory Inventory { get; }
+
+   
 
     public override string ToString()
     {

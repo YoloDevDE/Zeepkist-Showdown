@@ -1,15 +1,17 @@
 ﻿using Showdown3.Commands;
+using Showdown3.Entities;
 using Showdown3.Entities.Match;
+using Showdown3.Helper;
 using Showdown3.StateMachine.Interfaces;
 using ZeepSDK.Chat;
 
 namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 
-public class StateSetupMatch : IState
+public class State1SetupMatch : IState
 {
     private Match _match;
 
-    public StateSetupMatch(IContext context)
+    public State1SetupMatch(IContext context)
     {
         Context = context;
     }
@@ -32,16 +34,16 @@ public class StateSetupMatch : IState
     private void CreateMatch()
     {
         if (_match == null) TaggedMessenger.Value.LogError("No Match selected");
-        else Context.TransitionTo(new StateWaitingForRacers(Context));
+        else Context.TransitionTo(new State2WaitingForRacers(Context));
     }
 
     private async void SetMatch(string identifier)
     {
-        _match = await Match.GetMatchFromServerAsync(identifier);
+        _match = await Match.GetMatchFromServerAsync(identifier.ToUpper());
         _match.AvailableMaps = await Level.GetMatchFromServerAsync();
         ChatApi.SendMessage($"{string.Join(", ", _match.AvailableMaps)}");
         ((MatchContext)Context).Match = _match;
 
-        ChatApi.SendMessage($"<br>Match set to:<br>{_match.TeamA.Tag} vs. {_match.TeamB.Tag}");
+        ChatApi.SendMessage($"<br>Match set to '{identifier}':<br>{_match.TeamA.Tag} vs. {_match.TeamB.Tag}");
     }
 }

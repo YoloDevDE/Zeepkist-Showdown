@@ -1,11 +1,12 @@
 ﻿using Showdown3.Commands;
+using Showdown3.Helper;
 using Showdown3.StateMachine.Interfaces;
 
 namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 
-public class StateWaiting : IState
+public class StateWaitingForHost : IState
 {
-    public StateWaiting(IContext context)
+    public StateWaitingForHost(IContext context)
     {
         Context = context;
     }

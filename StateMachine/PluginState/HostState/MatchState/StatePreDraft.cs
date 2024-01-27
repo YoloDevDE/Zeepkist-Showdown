@@ -1,6 +1,7 @@
 ﻿using Showdown3.Commands;
+using Showdown3.Entities;
 using Showdown3.Entities.Match;
-using Showdown3.Models;
+using Showdown3.Helper;
 using Showdown3.StateMachine.Interfaces;
 using ZeepSDK.Chat;
 
@@ -25,14 +26,15 @@ public class StatePreDraft : IState
         _match = ((MatchContext)Context).Match;
 
         new ServerMessageBuilder()
-            .SetColor(Color.orange)
-            .AddText(string.Join(", ", _match.AvailableMaps))
+            .SetColor(Color.white)
+            .AddText("Choosing the initiative team...")
             .BuildAndExecute();
     }
 
     public void Exit()
     {
         CommandMatchInitiative.OnHandle -= OnCommandSetInitiative;
+        ((MatchContext)Context).Match = _match;
     }
 
     public IContext Context { get; }
@@ -49,7 +51,10 @@ public class StatePreDraft : IState
                 break;
             default:
                 ChatApi.AddLocalMessage("Invalid arguments. Use \"A\" or \"B\"");
-                break;
+                return;
         }
+
+        ChatApi.SendMessage($"Initiative is set to {_match.Initiative.Tag}");
+        Context.TransitionTo(new StateDraft(Context));
     }
 }

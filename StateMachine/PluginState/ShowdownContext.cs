@@ -7,6 +7,7 @@ public class ShowdownContext : IContext
     public ShowdownContext()
     {
         TopContext = this;
+
         State = new StateOff(this);
         State.Enter();
     }
