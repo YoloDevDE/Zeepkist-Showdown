@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Showdown3.Commands;
+using Showdown3.Entities.Match;
 using Showdown3.Helper;
 using Showdown3.StateMachine.Interfaces;
 using ZeepkistClient;
@@ -14,10 +15,13 @@ public class StateReadyCheck : IState
     private HashSet<ulong> _readyVotes;
     private int _timeLeft;
     private int _votesMax;
+    private Match _match;
 
     public StateReadyCheck(IContext context)
     {
         Context = context;
+        _match =
+            ((MatchContext)Context).Match;
     }
 
     public IContext Context { get; }
@@ -32,7 +36,7 @@ public class StateReadyCheck : IState
         CommandReady.OnHandle += OnCommandReady;
         MultiplayerApi.PlayerJoined += OnPlayerJoined;
         MultiplayerApi.PlayerLeft += OnPlayerLeft;
-
+        _countdown.Start();
         new LobbyConfigurer()
             .SetTime(86400)
             .Build();
@@ -45,6 +49,8 @@ public class StateReadyCheck : IState
         CommandReady.OnHandle -= OnCommandReady;
         MultiplayerApi.PlayerJoined -= OnPlayerJoined;
         MultiplayerApi.PlayerLeft -= OnPlayerLeft;
+        ((MatchContext)Context).Match = _match;
+        _countdown.Stop();
     }
 
     private void OnPlayerLeft(ZeepkistNetworkPlayer player)
@@ -64,7 +70,7 @@ public class StateReadyCheck : IState
         _readyVotes.Add(steamId);
         UpdateServerMessage();
         if (_readyVotes.Count == _votesMax)
-            _countdown.Stop();
+            TransitionTo();
     }
 
     private void TransitionTo()
@@ -84,7 +90,7 @@ public class StateReadyCheck : IState
             .SetColor(Color.red)
             .AddText($"!ready ({_readyVotes.Count}/{_votesMax})")
             .AddBreak()
-            .AddText($"Time Left: {TimeSpan.FromSeconds(_timeLeft).Duration():mm':'ss}")
+            .AddText($"Time Left: {_countdown.GetFormattedRemainingTime()}")
             .BuildAndExecute();
     }
 }

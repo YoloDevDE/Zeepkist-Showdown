@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Showdown3.Helper;
+using ZeepSDK.Chat;
 
 namespace Showdown3.Entities.Match;
 
@@ -18,20 +19,58 @@ public class Match
         PickedMaps = new HashSet<Level>();
         AvailableMaps = new HashSet<Level>(); // Muss initialisiert oder zugewiesen werden
         Initiative = TeamA; // Oder basierend auf einem Münzwurf entscheiden
+        Rounds = new List<Round>();
+        MatchScores = new Dictionary<Team, int>
+        {
+            { TeamA, 0 },
+            { TeamB, 0 }
+        };
+    }
+    public void CalculateRoundWinnerAndUpdateMatchScore()
+    {
+        var currentRound = Rounds[RoundIndex];
+        int teamAScore = currentRound.CalculateTeamScore(TeamA);
+        int teamBScore = currentRound.CalculateTeamScore(TeamB);
+
+        var roundWinner = teamAScore > teamBScore ? TeamA : teamBScore > teamAScore ? TeamB : null;
+        if (roundWinner != null)
+        {
+            MatchScores[roundWinner]++;
+        }
+
+        RoundIndex++; // Gehe zur nächsten Runde
     }
 
+    public int RoundIndex { get; set; } = 0;
+    public List<Round> Rounds { get; set; }
     public Team TeamA { get; set; }
     public Team TeamB { get; set; }
     public Team CurrentTurnTeam { get; set; }
-    public Team Initiative { get; set; }
+
+    public Dictionary<Team, int> MatchScores { get; private set; }
+    public Team Initiative { get; private set; }
+
+    public void SetInitiative(Team team)
+    {
+        Initiative = team;
+        CurrentTurnTeam = team;
+    }
+
     public HashSet<Level> BannedMaps { get; set; }
     public HashSet<Level> PickedMaps { get; set; }
     public HashSet<Level> AvailableMaps { get; set; }
+    public Level LastDraftedLevel { get; set; }
+
+    public bool MustPick { get; set; }
+    public string LastDraftAction { get; set; }
 
     // Event, das aufgerufen wird, wenn der Draft abgeschlossen ist
     public event Action OnDraftCompleted;
     public event Action OnBanFailed;
     public event Action OnPickFailed;
+    public event Action OnTeamSwapped;
+
+    public event Action<Team> OnDraftSuccessful;
 
     public override string ToString()
     {
@@ -52,6 +91,7 @@ public class Match
         {
             AvailableMaps.Add(bannedMap);
         }
+
         BannedMaps.Clear();
     }
 
@@ -80,7 +120,11 @@ public class Match
             AvailableMaps.Remove(selectedLevel);
         }
 
-        UpdateTurnTeamAndCheckDraftCompletion();
+        Rounds.Add(
+            new Round(TeamA, TeamB, selectedLevel)
+        );
+        LastDraftAction = "picked";
+        UpdateTurnTeamAndCheckDraftCompletion(selectedLevel);
     }
 
     public void ExecuteBan(int mapIndex)
@@ -108,28 +152,33 @@ public class Match
             AvailableMaps.Remove(selectedLevel);
         }
 
-        UpdateTurnTeamAndCheckDraftCompletion();
+        LastDraftAction = "banned";
+        UpdateTurnTeamAndCheckDraftCompletion(selectedLevel);
     }
 
 
-    private void UpdateTurnTeamAndCheckDraftCompletion()
+    private void UpdateTurnTeamAndCheckDraftCompletion(Level selectedLevel)
     {
+        LastDraftedLevel = selectedLevel;
         UpdateTurnTeam();
+
         if (IsDraftCompleted())
         {
             OnDraftCompleted?.Invoke();
         }
     }
-    
 
 
     private void UpdateTurnTeam()
     {
+        OnDraftSuccessful?.Invoke(CurrentTurnTeam);
         CurrentTurnTeam = CurrentTurnTeam == TeamA ? TeamB : TeamA;
+        OnTeamSwapped?.Invoke();
     }
 
     private bool IsDraftCompleted()
     {
+        ChatApi.SendMessage($"{PickedMaps.Count}:{CurrentNeededMapCount}");
         return PickedMaps.Count == CurrentNeededMapCount;
     }
 
@@ -145,5 +194,12 @@ public class Match
     {
         var jsonResponse = await new HttpHelper().GetAsync($"/api/matches/{identifier}");
         return JsonHelper.DeserializeObject<Match>(jsonResponse);
+    }
+
+    public void PickForRacer()
+    {
+        var count = AvailableMaps.Count;
+        var rnd = new Random().Next(count);
+        ExecutePick(rnd);
     }
 }

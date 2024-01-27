@@ -3,7 +3,9 @@ using Showdown3.Entities;
 using Showdown3.Entities.Match;
 using Showdown3.Helper;
 using Showdown3.StateMachine.Interfaces;
+using ZeepkistClient;
 using ZeepSDK.Chat;
+using ZeepSDK.Playlist;
 
 namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 

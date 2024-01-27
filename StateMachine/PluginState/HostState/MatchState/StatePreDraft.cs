@@ -44,10 +44,10 @@ public class StatePreDraft : IState
         switch (arguments.ToUpper())
         {
             case "A":
-                _match.Initiative = _match.TeamA;
+                _match.SetInitiative(_match.TeamA);
                 break;
             case "B":
-                _match.Initiative = _match.TeamB;
+                _match.SetInitiative(_match.TeamB);
                 break;
             default:
                 ChatApi.AddLocalMessage("Invalid arguments. Use \"A\" or \"B\"");

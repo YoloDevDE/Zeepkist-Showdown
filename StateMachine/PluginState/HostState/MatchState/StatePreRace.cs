@@ -1,7 +1,10 @@
 ﻿using System;
+using Showdown3.Entities.Match;
 using Showdown3.Helper;
 using Showdown3.StateMachine.Interfaces;
 using ZeepSDK.Chat;
+using ZeepSDK.Multiplayer;
+using ZeepSDK.Playlist;
 using ZeepSDK.Racing;
 
 namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
@@ -9,10 +12,12 @@ namespace Showdown3.StateMachine.PluginState.HostState.MatchState;
 public class StatePreRace : IState
 {
     private Countdown _countdown;
+    private Match _match;
 
     public StatePreRace(IContext context)
     {
         Context = context;
+        _match = ((MatchContext)context).Match;
     }
 
 
@@ -22,14 +27,17 @@ public class StatePreRace : IState
         _countdown.OnTick += CountdownOnTick;
         _countdown.OnCountdownEnd += CountdownOnCountdownEnded;
         RacingApi.LevelLoaded += RacingApiOnLevelLoaded;
+        MultiplayerApi.SetNextLevelIndex(_match.RoundIndex);
+        _countdown.Start();
     }
 
     public void Exit()
     {
         _countdown.OnTick -= CountdownOnTick;
         _countdown.OnCountdownEnd -= CountdownOnCountdownEnded;
-        _countdown.Stop();
         RacingApi.LevelLoaded -= RacingApiOnLevelLoaded;
+        _countdown.Stop();
+        ((MatchContext)Context).Match = _match;
     }
 
     public IContext Context { get; }
@@ -48,9 +56,9 @@ public class StatePreRace : IState
     {
         new ServerMessageBuilder()
             .SetColor(Color.red)
-            .AddText("X vs Y")
+            .AddText($"{_match.TeamA} vs {_match.TeamB}")
             .AddBreak()
-            .AddText($"Starting in: {TimeSpan.FromSeconds(seconds).Duration():ss}")
+            .AddText($"Starting in: {_countdown.GetFormattedRemainingTime()}")
             .BuildAndExecute();
     }
 }

@@ -21,7 +21,17 @@ public class Team
     public ulong ChallongeId { get; set; }
     public TeamInventory Inventory { get; }
 
-   
+
+    public Racer GetRacerBySteamId(ulong steamId)
+    {
+        foreach (Racer racer in Members)
+        {
+            if (racer.SteamId == steamId)
+                return racer;
+        }
+
+        return null;
+    }
 
     public override string ToString()
     {
@@ -36,9 +46,11 @@ public class Team
         var formattedPicks = Inventory.Picks.Count > 0
             ? string.Join(", ", Inventory.Picks.Select(p => p.Name))
             : "None";
-
+        string tmpName = Name;
+        if (Name.Length > 31)
+            tmpName = Name[..32] + "...";
         return new MessageBuilder()
-            .AddText($"{Tag} {Name}")
+            .AddText($"{Tag} {tmpName}")
             .AddBreak()
             .AddSeparator()
             .AddText($"Banned: {formattedBans} | Picked: {formattedPicks}")
